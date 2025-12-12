@@ -1,0 +1,9 @@
+{
+  "name": "BinAlert Web",
+  "description": "Intelligent Garbage Overflow Detection Platform connecting citizens and municipalities.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

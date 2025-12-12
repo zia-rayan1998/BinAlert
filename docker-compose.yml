@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 1. The Database
+  db:
+    image: postgres:15
+    container_name: binalert_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: binalert_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. The Python Backend (FastAPI)
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: binalert_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/binalert_db
+    depends_on:
+      - db
+
+  # 3. The Frontend (React/Vite)
+  frontend:
+    build: .
+    container_name: binalert_web
+    ports:
+      - "3000:80"
+    environment:
+      # This points to the backend container
+      VITE_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
