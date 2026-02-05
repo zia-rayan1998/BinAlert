@@ -15,7 +15,8 @@ export interface AIAnalysisResult {
 export const analyzeBinImage = async (base64Image: string): Promise<AIAnalysisResult> => {
   try {
     // Send the base64 image to the backend API which will call Gemini.
-    const resp = await fetch(`/api/analyze`, {
+    const base = (import.meta as any).env?.VITE_API_BASE ?? "";
+    const resp = await fetch(`${base}/api/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: base64Image })
